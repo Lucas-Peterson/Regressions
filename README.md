@@ -1,3 +1,17 @@
+### In this repo I want to make my conspects about regressions
+
+
+
+### Features
+- Conspect about polynomial regression (this kata solution https://www.codewars.com/kata/591748b3f014a2593d0000d9 )
+
+
+
+
+
+
+
+
 ### How Each Element in Linear Regression Works
 
 Linear regression is a method that models the relationship between an independent variable `x` and a dependent variable `y` using a linear equation of the form:

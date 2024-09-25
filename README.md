@@ -114,7 +114,105 @@ Thus, linear regression builds a straight line that best describes the relations
 
 
 
+### Polynomial regression
+
+I did it in another style, not like a previous conspect, sorry, if it's confused
+
+### Class Constructor Datamining
+
+def __init__(self, train_set):
+    self.x_values = [point[0] for point in train_set]
+    self.y_values = [point[1] for point in train_set]
+    self.coefficients = self.fit_polynomial(5)
+Description:
+The constructor takes a training dataset (train_set), where each point consists of x and y values.
+Arrays self.x_values and self.y_values are populated from the training set.
+It calls the fit_polynomial(5) function to find the coefficients of a 5th-degree polynomial that will approximate the data.
+
+### Method fit_polynomial(self, degree)
+
+
+def fit_polynomial(self, degree):
+    X = [[x ** d for d in range(degree + 1)] for x in self.x_values]
+    Y = self.y_values
+    X_T = self.transpose(X)
+    X_T_X = self.matrix_multiply(X_T, X)
+    X_T_Y = self.matrix_vector_multiply(X_T, Y)
+    coefficients = self.solve_system(X_T_X, X_T_Y)
+    return coefficients
+
+
+It constructs a feature matrix X, where each row contains values of x raised from the 0th to the degree degree-th power.
+Computes the transpose of matrix XT and performs matrix multiplications 𝑋𝑇 × X and XT ×Y 
+
+
+### Method predict(self, x)
+
+def predict(self, x):
+    return sum(self.coefficients[i] * (x ** i) for i in range(len(self.coefficients)))
+
+This method uses the computed polynomial coefficients to predict the y value for a given x.
+It sums up values of coefficients[i] for each coefficient.
+
+### Method transpose(self, matrix)
+
+def transpose(self, matrix):
+    return [[matrix[j][i] for j in range(len(matrix))] for i in range(len(matrix[0]))]
+
+Transposes a matrix, which means it switches rows and columns
 
 
 
+### Method matrix_multiply(self, A, B)
 
+def matrix_multiply(self, A, B):
+    result = [[0 for _ in range(len(B[0]))] for _ in range(len(A))]
+    for i in range(len(A)):
+        for j in range(len(B[0])):
+            for k in range(len(B)):
+                result[i][j] += A[i][k] * B[k][j]
+    return result
+
+
+
+Multiplies two matrices A and B and returns the result.
+It uses loops over rows and columns to perform the matrix multiplication.
+
+
+
+### Method matrix_vector_multiply(self, A, v)
+
+def matrix_vector_multiply(self, A, v):
+    result = [0 for _ in range(len(A))]
+    for i in range(len(A)):
+        for j in range(len(v)):
+            result[i] += A[i][j] * v[j]
+    return result
+
+
+Multiplies matrix 𝐴 by vector 𝑣 and returns the result.
+
+
+### Method solve_system(self, A, b)
+
+def solve_system(self, A, b):
+    n = len(A)
+    for i in range(n):
+        factor = A[i][i]
+        for j in range(i, n):
+            A[i][j] /= factor
+        b[i] /= factor
+        for k in range(i + 1, n):
+            factor = A[k][i]
+            for j in range(i, n):
+                A[k][j] -= factor * A[i][j]
+            b[k] -= factor * b[i]
+    x = [0 for _ in range(n)]
+    for i in range(n - 1, -1, -1):
+        x[i] = b[i] - sum(A[i][j] * x[j] for j in range(i + 1, n))
+    return x
+
+
+Solves a system of linear equations using Gaussian elimination (You can find more information about it here ---> [Tutorial](https://www.youtube.com/watch?v=eDb6iugi6Uk)
+In the forward pass, it normalizes the current row and eliminates variables below the current row.
+In the backward pass, it finds the solution of the system of equations.
